@@ -1,0 +1,13 @@
+--- a/handler.sh	2012-01-25 00:26:49.196364248 +0100
++++ b/handler.sh	2012-01-25 00:31:23.314879221 +0100
+@@ -10,2 +10,10 @@
+ case "$1" in
++    video/switchmode)
++        case "$2" in
++            VMOD)
++                logger "Switch Display mode pressed: $2"
++                /usr/local/bin/monitor-hotplug.sh
++                ;;
++        esac
++        ;;
+     button/power)
