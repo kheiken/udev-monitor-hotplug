@@ -23,19 +23,19 @@ export DISPLAY=:0.0
 PRIMARY=LVDS1
 SECONDARY=VGA1
 
-if [[ ! -d /var/local/monitor ]]; then
-	mkdir /var/local/monitor
-	echo "on" > /var/local/monitor/primary
-	echo "off" > /var/local/monitor/secondary
+if [[ ! -d /tmp/monitor-hotplug ]]; then
+	mkdir /tmp/monitor-hotplug
+	echo "on" > /tmp/monitor-hotplug/primary
+	echo "off" > /tmp/monitor-hotplug/secondary
 fi
 
 logger "monitor was plugged or unplugged"
 
 function primary_active {
-	[[ $( grep 'on' /var/local/monitor/primary ) ]]
+	[[ $( grep 'on' /tmp/monitor-hotplug/primary ) ]]
 }
 function secondary_active {
-	[[ $( grep 'on' /var/local/monitor/secondary ) ]]
+	[[ $( grep 'on' /tmp/monitor-hotplug/secondary ) ]]
 }
 function secondary_connected {
 	[[ $( xrandr | grep "${SECONDARY} connected" ) ]]
@@ -43,29 +43,29 @@ function secondary_connected {
 
 function disable_lvds {
 	xrandr --output ${PRIMARY} --off
-	echo "off" > /var/local/monitor/primary
+	echo "off" > /tmp/monitor-hotplug/primary
 }
 
 function enable_primary {
 	logger "enabling primary monitor only"
 	xrandr --output ${PRIMARY} --auto --output ${SECONDARY} --off
-	echo "on" > /var/local/monitor/primary
-	echo "off" > /var/local/monitor/secondary
+	echo "on" > /tmp/monitor-hotplug/primary
+	echo "off" > /tmp/monitor-hotplug/secondary
 }
 
 function enable_secondary {
 	logger "enabling secondary monitor only"
 
 	xrandr --output ${SECONDARY} --auto --output ${PRIMARY} --off
-	echo "off" > /var/local/monitor/primary
-	echo "on" > /var/local/monitor/secondary
+	echo "off" > /tmp/monitor-hotplug/primary
+	echo "on" > /tmp/monitor-hotplug/secondary
 }
 
 function dual {
 	logger "enabling both monitors"
 	xrandr --output ${PRIMARY} --auto --output ${SECONDARY} --auto --right-of ${PRIMARY}
-	echo "on" >> /var/local/monitor/primary
-	echo "on" >> /var/local/monitor/secondary
+	echo "on" >> /tmp/monitor-hotplug/primary
+	echo "on" >> /tmp/monitor-hotplug/secondary
 }
 
 if secondary_connected; then
